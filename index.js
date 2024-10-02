@@ -10,11 +10,26 @@ const data = {
     linux: require("./dist/linux.json")
 };
 
+function getRandom(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
 function agent(type) {
     return function(){
         let what = Math.random() * 100;
         let total = 0;
-        const typed = (type) ? data[type] : data.mobile.concat(data.desktop);
+        let typed;
+
+        if (type && data[type]) {
+            typed = data[type];
+        } else {
+            typed = data.mobile.concat(data.desktop);
+            typed.sort((a,b)=>{
+                return a.pct < b.pct ? -1 : 1;
+            })
+            what *= 2;
+        }
+
         for (let items in typed) {
             total += typed[items].pct;
             if (what <= total) {
@@ -24,12 +39,21 @@ function agent(type) {
     }
 }
 
+function random(type) {
+    return function () {
+        return data[type][getRandom(data[type].length)];
+    }
+}
+
 // If called from the command line
 if (require.main === module) {
-    if (process.argv.length[process.argv.length - 1] === "--mobile") {
-        console.log(agent("mobile"))
-    } else {
-        console.log(agent("desktop"))
+    let type = process.argv[process.argv.length - 1]?.replace("--","");
+    if (type === "desktop" || type === "mobile") {
+        console.log(agent(type)());
+    } else if (data[type]){
+        console.log(random(type)());
+    } else if (type === "any" || type === "index.js") {
+        console.log(agent()());
     }
 
 } else {
@@ -37,11 +61,11 @@ if (require.main === module) {
         desktop: agent("desktop"),
         mobile: agent("mobile"),
         os: {
-            android: agent("android"),
-            iphone: agent("iphone"),
-            windows: agent("windows"),
-            macosx: agent("macosx"),
-            linux: agent("linux")
+            android: random("android"),
+            iphone: random("iphone"),
+            windows: random("windows"),
+            macosx: random("macosx"),
+            linux: random("linux")
         },
         any: agent()
     }

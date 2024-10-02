@@ -1,6 +1,13 @@
-  const data = {
+const data = {
+    desktop: require("./dist/desktop.json"),
     mobile: require("./dist/mobile.json"),
-    desktop: require("./dist/desktop.json")
+
+    android: require("./dist/android.json"),
+    iphone: require("./dist/iphone.json"),
+
+    windows: require("./dist/windows.json"),
+    macosx: require("./dist/macosx.json"),
+    linux: require("./dist/linux.json")
 };
 
 function agent(type) {
@@ -29,6 +36,13 @@ if (require.main === module) {
     module.exports = {
         desktop: agent("desktop"),
         mobile: agent("mobile"),
+        os: {
+            android: agent("android"),
+            iphone: agent("iphone"),
+            windows: agent("windows"),
+            macosx: agent("macosx"),
+            linux: agent("linux")
+        },
         any: agent()
     }
 }

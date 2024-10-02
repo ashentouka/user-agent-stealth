@@ -1,6 +1,6 @@
 {
   "name": "user-agent-stealth",
-  "version": "1.2024.8",
+  "version": "1.2024.10.02",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
